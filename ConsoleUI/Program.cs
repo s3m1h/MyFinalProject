@@ -3,15 +3,26 @@ using Business.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 
+// Data Transformation Object
+// CategoryManagerTest();
 // ProductManagerTest();
 // IoC
-CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
-foreach (var category in categoryManager.GetAll())
+ProductManager productManager = new ProductManager(new EfProductDal());
+foreach (var product in productManager.GetProductDetails())
 {
-    Console.WriteLine(category.CategoryName);
+    Console.WriteLine("{0} / {1} / {2}",product.ProductID,product.ProductName,product.CategoryName);
 }
 
 
+
+void CategoryManagerTest()
+{
+    CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+    foreach (var category in categoryManager.GetAll())
+    {
+        Console.WriteLine(category.CategoryName);
+    }
+}
 
 void ProductManagerTest()
 {
