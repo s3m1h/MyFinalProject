@@ -8,7 +8,7 @@ using DataAccess.Concrete.InMemory;
 // ProductManagerTest();
 // IoC
 ProductManager productManager = new ProductManager(new EfProductDal());
-foreach (var product in productManager.GetProductDetails())
+foreach (var product in productManager.GetProductDetails().Data)
 {
     Console.WriteLine("{0} / {1} / {2}",product.ProductID,product.ProductName,product.CategoryName);
 }
@@ -29,7 +29,7 @@ void ProductManagerTest()
     //ProductManager productManager = new ProductManager(new InMemoryProductDal());
     ProductManager productManager = new ProductManager(new EfProductDal());
 
-    foreach (var product in productManager.GetAllByUnitPrice(40, 100))
+    foreach (var product in productManager.GetAllByUnitPrice(40, 100).Data)
     {
         Console.WriteLine(product.ProductName);
     }
