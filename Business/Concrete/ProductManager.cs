@@ -37,8 +37,13 @@ namespace Business.Concrete
 
         public IDataResult<List<Product>> GetAll()
         {
+            if(DateTime.Now.Hour == 10)
+            {
+                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            }
+
             // iş kodları
-            return new DataResult<List<Product>>(_productDal.GetAll(),true);
+            return new DataResult<List<Product>>(_productDal.GetAll(),true,Messages.ProductListed);
 
         }
 

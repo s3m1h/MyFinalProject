@@ -7,17 +7,35 @@ using DataAccess.Concrete.InMemory;
 // CategoryManagerTest();
 // ProductManagerTest();
 // IoC
+
+
+
 ProductManager productManager = new ProductManager(new EfProductDal());
-foreach (var product in productManager.GetProductDetails().Data)
+
+var result = productManager.GetProductDetails();
+
+if (result.Success == true)
 {
-    Console.WriteLine("{0} / {1} / {2}",product.ProductID,product.ProductName,product.CategoryName);
+    foreach (var product in result.Data)
+    {
+        Console.WriteLine("{0} / {1} / {2}", product.ProductID, product.ProductName, product.CategoryName);
+    }
+
 }
+else
+{
+    Console.WriteLine(result.Message);
+}
+
+
+
 
 
 
 void CategoryManagerTest()
 {
     CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+
     foreach (var category in categoryManager.GetAll())
     {
         Console.WriteLine(category.CategoryName);
@@ -28,7 +46,6 @@ void ProductManagerTest()
 {
     //ProductManager productManager = new ProductManager(new InMemoryProductDal());
     ProductManager productManager = new ProductManager(new EfProductDal());
-
     foreach (var product in productManager.GetAllByUnitPrice(40, 100).Data)
     {
         Console.WriteLine(product.ProductName);
