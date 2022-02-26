@@ -43,7 +43,7 @@ namespace Business.Concrete
             }
 
             // iş kodları
-            return new DataResult<List<Product>>(_productDal.GetAll(),true,Messages.ProductListed);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductListed);
 
         }
 
