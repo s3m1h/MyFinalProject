@@ -29,8 +29,6 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-
-            
             _productDal.Add(product);
             return new SuccessDataResult<Product>(Messages.ProductAdded);
             
