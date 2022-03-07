@@ -4,6 +4,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConserns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -18,34 +19,33 @@ using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
-    public class ProductManager : IProductService
+    public class ProductManager :IProductService
     {
         IProductDal _productDal;
-
-        public ProductManager(IProductDal productDal)
+        ICategoryService _categoryService;
+        public ProductManager(IProductDal productDal, ICategoryService categoryService)
         {
             _productDal = productDal;
-
-
+            _categoryService = categoryService;
         }
 
         [ValidationAspect(typeof(ProductValidator))]
-
         public IResult Add(Product product)
-        {
+        { 
             // aynı isimde ürün eklenemez
-
-            // bir kategoride en fazla 10 ürün olabilir
-            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+            // eger mevcut kategori sayısı 15i gecmisse sisteme yeni urün eklenemez
+            IResult result = BusinessRules.Run(
+                CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+                CheckIfProductNameExists(product.ProductName)
+                );
+            if (result != null)
             {
-                _productDal.Add(product);
-                return new SuccessResult();
+                return result;
             }
-            return new ErrorResult();
+            _productDal.Add(product);
+            return new SuccessResult();
         }
         
-    
-
         public IDataResult<List<Product>> GetAll()
         {
             if(DateTime.Now.Hour == 11)
@@ -55,7 +55,6 @@ namespace Business.Concrete
 
             // iş kodları
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductListed);
-
         }
 
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
@@ -90,11 +89,9 @@ namespace Business.Concrete
             {
                 _productDal.Add(product);
                 return new SuccessResult();
-
             }
             return new ErrorResult();
         }
-
 
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {
@@ -107,12 +104,13 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        private IResult CheckIfProductNameNotSameName(int productId,string productName)
+        private IResult CheckIfProductNameExists(string productName)
         {
-            var result = _productDal.Get(p => p.ProductId == productId);
-            if(result.ProductName == productName)
+            // any -- var mı
+            var result = _productDal.GetAll(p => p.ProductName == productName).Count;
+            if(result != 0)
             {
-                return new ErrorResult("aynı isimde olamaz");
+                return new ErrorResult(Messages.ProductNameAlreadyExists);
             }
             return new SuccessResult();
         }
