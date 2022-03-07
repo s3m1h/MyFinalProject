@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -24,15 +25,26 @@ namespace Business.Concrete
         public ProductManager(IProductDal productDal)
         {
             _productDal = productDal;
+
+
         }
 
         [ValidationAspect(typeof(ProductValidator))]
+
         public IResult Add(Product product)
         {
-            _productDal.Add(product);
-            return new SuccessDataResult<Product>(Messages.ProductAdded);
-            
+            // aynı isimde ürün eklenemez
+
+            // bir kategoride en fazla 10 ürün olabilir
+            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+            {
+                _productDal.Add(product);
+                return new SuccessResult();
+            }
+            return new ErrorResult();
         }
+        
+    
 
         public IDataResult<List<Product>> GetAll()
         {
@@ -68,6 +80,41 @@ namespace Business.Concrete
         {
             var result = _productDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(result,"message");
+        }
+            
+        [ValidationAspect(typeof(ProductValidator))]
+        public IResult Update(Product product)
+        {
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
+            if (result <= 10)
+            {
+                _productDal.Add(product);
+                return new SuccessResult();
+
+            }
+            return new ErrorResult();
+        }
+
+
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
+        {
+            // iş kuralı parcacıgı
+            int result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfProductNameNotSameName(int productId,string productName)
+        {
+            var result = _productDal.Get(p => p.ProductId == productId);
+            if(result.ProductName == productName)
+            {
+                return new ErrorResult("aynı isimde olamaz");
+            }
+            return new SuccessResult();
         }
     }
 }

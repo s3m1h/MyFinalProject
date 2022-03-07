@@ -15,6 +15,8 @@ namespace Core.Aspects.Autofac.Validation
         private Type _validatorType;
         public ValidationAspect(Type validatorType)
         {
+            // defensive coding
+            // parametre olarak aldıgımız validatortype atanabilir olmalı. IValidator olmalı
             if (!typeof(IValidator).IsAssignableFrom(validatorType))
             {
                 throw new System.Exception("bu bir doğrulama sınıfı degil");
