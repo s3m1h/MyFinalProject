@@ -27,7 +27,7 @@ namespace Business.Constants
 
         public static string SuccessfulLogin = "başarılı giriş";
 
-        public static string UserAlreadyExists = "";
+        public static string UserAlreadyExists = "Bu maili kullanan bir kullanıcı zaten mevcut";
         public static string AccessTokenCreated = "token olusturuldu";
     }
 }

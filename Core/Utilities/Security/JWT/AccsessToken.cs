@@ -9,6 +9,7 @@ namespace Core.Utilities.Security.JWT
     public class AccessToken
     {
         public string Token { get; set; }
+        // token degerinin ne kadar süreyle geçerli oldugu bilgisi -- expiration
         public DateTime Expiration { get; set; }
     }
     
