@@ -27,7 +27,6 @@ namespace WebAPI.Controllers
                 return Ok(result.Data);
             }
             return BadRequest(result.Message);
-        
         }
         [HttpPost("register")]
         public IActionResult Register(UserForRegisterDto userForRegisterDto)
@@ -38,6 +37,7 @@ namespace WebAPI.Controllers
                 return BadRequest(userExists.Message);
             }
             var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
+            Console.WriteLine("registerResult: "+ registerResult.Data);
             var result = _authService.CreateAccessToken(registerResult.Data);
             if (result.Success)
             {
@@ -45,6 +45,5 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result.Message);
         }
-            
     }
 }

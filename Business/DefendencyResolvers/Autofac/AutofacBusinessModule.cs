@@ -33,6 +33,7 @@ namespace Business.DefendencyResolvers.Autofac
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
 
+
             //base.Load(builder);
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()

@@ -47,7 +47,7 @@ namespace Business.Concrete
         {
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            _userService.Add(new User
+            var user =new User
             {
                 Email = userForRegisterDto.Email,
                 FirstName = userForRegisterDto.FirstName,
@@ -55,8 +55,9 @@ namespace Business.Concrete
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Status = true
-            });
-            return new SuccessDataResult<User>(Messages.UserRegistered);
+            };
+            _userService.Add(user);
+            return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
 
         public IResult UserExists(string email)
