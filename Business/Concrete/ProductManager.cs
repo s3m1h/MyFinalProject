@@ -3,6 +3,8 @@ using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConserns.Validation;
 using Core.Utilities.Business;
@@ -47,9 +49,15 @@ namespace Business.Concrete
             _productDal.Add(product);
             return new SuccessResult();
         }
-        
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
 
         // Cache -- key, value
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             if(DateTime.Now.Hour == 11)
@@ -73,6 +81,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(result,"message") ;
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetProductById(int id)
         {
             var result = _productDal.Get(p => p.ProductId == id);
@@ -84,7 +93,8 @@ namespace Business.Concrete
             var result = _productDal.GetProductDetails();
             return new SuccessDataResult<List<ProductDetailDto>>(result,"message");
         }
-            
+        
+        [CacheRemoveAspect("IProductService.Get")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
