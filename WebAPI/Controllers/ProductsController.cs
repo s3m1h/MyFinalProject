@@ -29,10 +29,11 @@ namespace WebAPI.Controllers
             // swagger
 
             //IProductService productService = new ProductManager(new EfProductDal());
+            Thread.Sleep(5000);
             var result = _productService.GetAll();
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
 
             return BadRequest(result.Message);

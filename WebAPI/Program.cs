@@ -24,6 +24,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors();
 // Autofac, Ninject, CastleWindsor, StructureMap, DryInject
 //builder.Services.AddSingleton<IProductService,ProductManager>();
 //builder.Services.AddSingleton<IProductDal,EfProductDal>();
@@ -68,6 +69,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     
 }
+app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
